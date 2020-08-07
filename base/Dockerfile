@@ -2,6 +2,7 @@ FROM scratch
 ARG STAGEFILE
 ADD ${STAGEFILE} /
 ADD make.conf /etc/portage/
+ADD package.use/rsync /etc/portage/package.use/
 ADD bashrc /root/.bashrc
 ENTRYPOINT ["bash"]
 RUN ["bash", "-c", "if ! mountpoint /var/db/repos/gentoo; then emerge-webrsync; fi"]
