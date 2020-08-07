@@ -80,7 +80,7 @@ if [ -z "${BUILDTOOL}" ]; then
 	fi
 fi
 
-CMDLINE="--build-arg STAGEFILE=${STAGEFILE} --arch=${ARCH} -t gentoo"
+CMDLINE="--build-arg STAGEFILE=${STAGEFILE} -t gentoo"
 if [ "${LOCALREPO}" = "true" ]; then
 	CMDLINE="-v ${REPODIR}:/var/db/repos/gentoo:ro ${CMDLINE}"
 fi
