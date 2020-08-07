@@ -75,7 +75,7 @@ if [ -z "${BUILDTOOL}" ]; then
 	fi
 fi
 
-CMDLINE="-t gentoo/devtools"
+CMDLINE="-t gentoo:${ARCH}-devtools"
 if [ "${LOCALREPO}" = "true" ]; then
 	CMDLINE="-v ${REPODIR}:/var/db/repos/gentoo:ro ${CMDLINE}"
 fi
