@@ -6,6 +6,9 @@ ADD package.use/rsync /etc/portage/package.use/
 ADD bashrc /root/.bashrc
 ENTRYPOINT bash
 RUN bash -c "echo "EMERGE_DEFAULT_OPTS=""--quiet --verbose --autounmask --autounmask-continue"" >> /etc/portage/make.conf""
+RUN sed -i "/PORTDIR=.*/c\PORTDIR=\"/var/db/repos/gentoo\"" /etc/portage/make.conf
+RUN sed -i "/DISTDIR=.*/c\DISTDIR=\"/var/cache/distfiles\"" /etc/portage/make.conf
+RUN sed -i "/PKGDIR=.*/c\PKGDIR=\"/var/cache/binpkgs\"" /etc/portage/make.conf
 RUN mkdir -p /etc/portage/repos.conf
 RUN bash -c "if ! mountpoint /var/db/repos/gentoo; then emerge-webrsync; fi"
 RUN eselect profile set ${PROFILE}
