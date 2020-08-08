@@ -1,5 +1,5 @@
 #!/bin/bash
-options=$(getopt -o rd --long arch:,localrepo:,localdist:,repodir:,distdir:,buildtool:,stagefile: -- "${@}")
+options=$(getopt -o rd --long arch:,localrepo:,localdist:,repodir:,distdir:,buildtool:,stagefile:,profile: -- "${@}")
 eval set -- "${options}"
 function istrue(){
 case "${1}" in
@@ -45,6 +45,10 @@ while true; do
 			shift
 			STAGEFILE="${1}"
 			;;
+		--profile)
+			shift
+			PROFILE="${1}"
+			;;
 		-r)
 			LOCALREPO="true"
 			;;
@@ -61,6 +65,7 @@ done
 REPODIR="${REPODIR:-/var/db/repos/gentoo}"
 DISTDIR="${DISTDIR:-/var/cache/distfiles}"
 STAGEFILE="${STAGEFILE:-stage3-${ARCH}.tar.zst}"
+PROFILE="${PROFILE:-default/linux/arm64/17.0}"
 
 if [ -z "${ARCH}" ]; then
 	echo "error: must specify an ARCH"
@@ -80,7 +85,7 @@ if [ -z "${BUILDTOOL}" ]; then
 	fi
 fi
 
-CMDLINE="--build-arg STAGEFILE=${STAGEFILE} -t gentoo:${ARCH}-base"
+CMDLINE="--build-arg STAGEFILE=${STAGEFILE} --build-arg PROFILE=${PROFILE} -t gentoo:${ARCH}-base"
 if [ "${LOCALREPO}" = "true" ]; then
 	CMDLINE="-v ${REPODIR}:/var/db/repos/gentoo:ro ${CMDLINE}"
 fi
