@@ -5,7 +5,9 @@ ADD ${STAGEFILE} /
 ADD package.use/rsync /etc/portage/package.use/
 ADD bashrc /root/.bashrc
 ENTRYPOINT bash
-RUN bash -c "echo "EMERGE_DEFAULT_OPTS=""--quiet --verbose --autounmask --autounmask-continue"" >> /etc/portage/make.conf""
+# I could not get it to work with >> , bash gods are welcomed to submit a cleaner implementation
+RUN bash -c "echo EMERGE_DEFAULT_OPTS >> /etc/portage/make.conf"
+RUN sed -i "/EMERGE_DEFAULT_OPTS/c\EMERGE_DEFAULT_OPTS=\"--quiet --verbose --autounmask --autounmask-continue\"" /etc/portage/make.conf
 RUN sed -i "/PORTDIR=.*/c\PORTDIR=\"/var/db/repos/gentoo\"" /etc/portage/make.conf
 RUN sed -i "/DISTDIR=.*/c\DISTDIR=\"/var/cache/distfiles\"" /etc/portage/make.conf
 RUN sed -i "/PKGDIR=.*/c\PKGDIR=\"/var/cache/binpkgs\"" /etc/portage/make.conf
