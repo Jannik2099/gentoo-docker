@@ -65,7 +65,7 @@ done
 REPODIR="${REPODIR:-/var/db/repos/gentoo}"
 DISTDIR="${DISTDIR:-/var/cache/distfiles}"
 STAGEFILE="${STAGEFILE:-stage3-${ARCH}.tar.zst}"
-PROFILE="${PROFILE:-default/linux/arm64/17.0}"
+PROFILE="${PROFILE:-1}"
 
 if [ -z "${ARCH}" ]; then
 	echo "error: must specify an ARCH"
