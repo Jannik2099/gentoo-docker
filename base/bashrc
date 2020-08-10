@@ -1,1 +1,1 @@
-export MAKEOPTS="-j$(nproc)"
+MAKEOPTS="-j$(nproc)"
