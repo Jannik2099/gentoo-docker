@@ -88,10 +88,10 @@ case "${BUILDTOOL}" in
 		docker build ${CMDLINE} .
 		;;
 	buildah)
-		buildah bud ${CMDLINE} .
+		buildah bud --format docker ${CMDLINE} .
 		;;
 	podman)
-		podman build ${CMDLINE} .
+		podman build --format docker ${CMDLINE} .
 		;;
 	*)
 		echo "buildtool not supported"
