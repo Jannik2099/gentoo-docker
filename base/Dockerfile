@@ -14,8 +14,8 @@ RUN sed -i "/PKGDIR=.*/c\PKGDIR=\"/var/cache/binpkgs\"" /etc/portage/make.conf
 RUN mkdir -p /etc/portage/repos.conf
 RUN if ! mountpoint /var/db/repos/gentoo; then emerge-webrsync; fi
 RUN eselect profile set ${PROFILE}
-RUN eselect news read --quiet
 RUN emerge -u gentoolkit
+RUN eselect news read --quiet
 RUN euse -E bindist
 RUN emerge -uDUN @world
 RUN emerge --depclean
