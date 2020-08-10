@@ -65,10 +65,10 @@ fi
 if [ -z "${BUILDTOOL}" ]; then
 	if test -f "$(command -v docker)"; then
 		BUILDTOOL=docker
-	elif test -f "$(command -v buildah)"; then
-		BUILDTOOL=buildah
 	elif test -f "$(command -v podman)"; then
 		BUILDTOOL=podman
+	elif test -f "$(command -v buildah)"; then
+		BUILDTOOL=buildah
 	else
 		echo "no OCI build tool found, exiting"
 		exit 1
@@ -87,11 +87,11 @@ case "${BUILDTOOL}" in
 	docker)
 		docker build ${CMDLINE} .
 		;;
-	buildah)
-		buildah bud --format docker ${CMDLINE} .
-		;;
 	podman)
 		podman build --format docker ${CMDLINE} .
+		;;
+	buildah)
+		buildah bud --format docker ${CMDLINE} .
 		;;
 	*)
 		echo "buildtool not supported"
