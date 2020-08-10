@@ -11,7 +11,7 @@ RUN sed -i "/PORTDIR=.*/c\PORTDIR=\"/var/db/repos/gentoo\"" /etc/portage/make.co
 RUN sed -i "/DISTDIR=.*/c\DISTDIR=\"/var/cache/distfiles\"" /etc/portage/make.conf
 RUN sed -i "/PKGDIR=.*/c\PKGDIR=\"/var/cache/binpkgs\"" /etc/portage/make.conf
 RUN mkdir -p /etc/portage/repos.conf
-RUN if ! mountpoint /var/db/repos/gentoo; then emerge-webrsync; fi
+RUN emerge-webrsync
 RUN eselect profile set ${PROFILE}
 RUN emerge -u gentoolkit
 RUN eselect news read --quiet
@@ -19,5 +19,3 @@ RUN euse -E bindist
 RUN emerge -uDUN @world
 RUN emerge --depclean
 RUN emerge @preserved-rebuild
-RUN if ! mountpoint /var/db/repos/gentoo; then rm -rf /var/db/repos/gentoo; fi
-RUN if ! mountpoint /var/cache/distfiles; then rm -rf /var/cache/distfiles/*; fi

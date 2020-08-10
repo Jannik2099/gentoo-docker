@@ -1,5 +1,7 @@
 #!/bin/bash
-options=$(getopt -o rd --long arch:,localrepo:,localdist:,repodir:,distdir:,buildtool:,stagefile:,profile: -- "${@}")
+location="$(readlink -f ${0})"
+location=${location%build.sh}
+options=$(getopt --longoptions arch:,buildtool:,stagefile:,profile:,target: --options "" -- "${@}")
 eval set -- "${options}"
 function istrue(){
 case "${1}" in
@@ -21,22 +23,6 @@ while true; do
 			shift
 			ARCH="${1}"
 			;;
-		--localrepo)
-			shift
-			istrue "${1}" && LOCALREPO="true"
-			;;
-		--localdist)
-			shift
-			istrue "${1}" && LOCALDIST="true"
-			;;
-		--repodir)
-			shift
-			REPODIR="${1}"
-			;;
-		--distdir)
-			shift
-			DISTDIR="${1}"
-			;;
 		--buildtool)
 			shift
 			BUILDTOOL="${1}"
@@ -49,11 +35,9 @@ while true; do
 			shift
 			PROFILE="${1}"
 			;;
-		-r)
-			LOCALREPO="true"
-			;;
-		-d)
-			LOCALDIST="true"
+		--target)
+			shift
+			TARGET="${1}"
 			;;
 		--)
 			shift
@@ -62,8 +46,6 @@ while true; do
 	esac
 	shift
 done
-REPODIR="${REPODIR:-/var/db/repos/gentoo}"
-DISTDIR="${DISTDIR:-/var/cache/distfiles}"
 STAGEFILE="${STAGEFILE:-stage3-${ARCH}.tar.zst}"
 PROFILE="${PROFILE:-1}"
 
@@ -85,26 +67,38 @@ if [ -z "${BUILDTOOL}" ]; then
 	fi
 fi
 
-CMDLINE="--build-arg STAGEFILE=${STAGEFILE} --build-arg PROFILE=${PROFILE} -t gentoo:${ARCH}-base"
-if [ "${LOCALREPO}" = "true" ]; then
-	CMDLINE="-v ${REPODIR}:/var/db/repos/gentoo:ro ${CMDLINE}"
-fi
-if [ "${LOCALDIST}" = "true" ]; then
-	CMDLINE="-v ${DISTDIR}:/var/cache/distfiles:rw ${CMDLINE}"
-fi
+CMDLINE="-v ${location}/.tmpfiles/gentoo:/var/db/repos/gentoo:rw -v ${location}/.tmpfiles/distfiles:/var/cache/distfiles:rw"
+case "${TARGET}" in
+	base)
+		CMDLINE="${CMDLINE} --build-arg STAGEFILE=${STAGEFILE} --build-arg PROFILE=${PROFILE}"
+		;;
+	devtools)
+		;;
+	*)
+		echo "ERROR: invalid target"
+		exit 1
+		;;
+esac
+
+CMDLINE="${CMDLINE} -t gentoo:${ARCH}-${TARGET}"
+mkdir -p .tmpfiles
+mkdir -p .tmpfiles/gentoo
+mkdir -p .tmpfiles/distfiles
 
 case "${BUILDTOOL}" in
 	docker)
-		docker build ${CMDLINE} .
+		docker build ${CMDLINE} ${TARGET}
 		;;
 	podman)
-		podman build --format docker ${CMDLINE} .
+		podman build --format docker ${CMDLINE} ${TARGET}
 		;;
 	buildah)
-		buildah bud --format docker ${CMDLINE} .
+		buildah bud --format docker ${CMDLINE} ${TARGET}
 		;;
 	*)
 		echo "buildtool not supported"
 		exit 1
 		;;
 esac
+
+rm -rf .tmpfiles/*
