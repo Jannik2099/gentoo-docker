@@ -11,5 +11,5 @@ RUN emerge -u dev-vcs/git
 RUN emerge -u app-portage/repoman
 RUN emerge -u app-eselect/eselect-repository
 RUN emerge -u dev-lang/go
-RUN emerge -u app-arch/tatt
+RUN emerge -u app-portage/tatt
 RUN eselect news read --quiet
