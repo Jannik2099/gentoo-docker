@@ -1,6 +1,7 @@
 FROM docker.io/jannik2099/gentoo:base
 ADD package.use/devtools /etc/portage/package.use/
 ADD profile/package.use.mask/rust /etc/portage/profile/package.use.mask/
+ARG CACHEBUST
 RUN emerge-webrsync
 RUN emerge -uDUN @world
 RUN emerge --depclean

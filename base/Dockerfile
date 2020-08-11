@@ -11,6 +11,7 @@ RUN sed -i "/PORTDIR=.*/c\PORTDIR=\"/var/db/repos/gentoo\"" /etc/portage/make.co
 RUN sed -i "/DISTDIR=.*/c\DISTDIR=\"/var/cache/distfiles\"" /etc/portage/make.conf
 RUN sed -i "/PKGDIR=.*/c\PKGDIR=\"/var/cache/binpkgs\"" /etc/portage/make.conf
 RUN mkdir -p /etc/portage/repos.conf
+ARG CACHEBUST
 RUN emerge-webrsync
 RUN eselect profile set ${PROFILE}
 RUN emerge -u gentoolkit

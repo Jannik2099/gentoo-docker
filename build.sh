@@ -67,7 +67,7 @@ if [ -z "${BUILDTOOL}" ]; then
 	fi
 fi
 
-CMDLINE="-v ${location}/.tmpfiles/gentoo:/var/db/repos/gentoo:rw -v ${location}/.tmpfiles/distfiles:/var/cache/distfiles:rw"
+CMDLINE="--build-arg CACHEBUST=$(date +%Y-%m-%d) -v ${location}/.tmpfiles/gentoo:/var/db/repos/gentoo:rw -v ${location}/.tmpfiles/distfiles:/var/cache/distfiles:rw"
 case "${TARGET}" in
 	base)
 		CMDLINE="${CMDLINE} --build-arg STAGEFILE=${STAGEFILE} --build-arg PROFILE=${PROFILE}"
