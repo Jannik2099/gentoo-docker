@@ -90,10 +90,10 @@ case "${BUILDTOOL}" in
 		docker build ${CMDLINE} ${TARGET}
 		;;
 	podman)
-		podman build --format docker ${CMDLINE} ${TARGET}
+		podman build --cap-add CAP_SYS_PTRACE --format docker ${CMDLINE} ${TARGET}
 		;;
 	buildah)
-		buildah bud --format docker ${CMDLINE} ${TARGET}
+		buildah bud --cap-add CAP_SYS_PTRACE --format docker ${CMDLINE} ${TARGET}
 		;;
 	*)
 		echo "buildtool not supported"
