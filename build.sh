@@ -100,5 +100,3 @@ case "${BUILDTOOL}" in
 		exit 1
 		;;
 esac
-
-rm -rf .tmpfiles/*
