@@ -3,7 +3,6 @@ ARG STAGEFILE
 ARG PROFILE
 ADD ${STAGEFILE} /
 ADD package.use/rsync /etc/portage/package.use/
-ADD bashrc /root/.bashrc
 ENTRYPOINT bash
 # I could not get it to work with >> , bash gods are welcomed to submit a cleaner implementation
 RUN bash -c "echo EMERGE_DEFAULT_OPTS >> /etc/portage/make.conf"
