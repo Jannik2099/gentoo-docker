@@ -1,7 +1,7 @@
 #!/bin/bash
 location="$(readlink -f ${0})"
 location=${location%build.sh}
-options=$(getopt --longoptions arch:,buildtool:,stagefile:,profile:,target: --options "" -- "${@}")
+options=$(getopt --longoptions arch:,buildtool:,mirror:,profile:,target: --options "" -- "${@}")
 eval set -- "${options}"
 function istrue(){
 case "${1}" in
@@ -27,13 +27,13 @@ while true; do
 			shift
 			BUILDTOOL="${1}"
 			;;
-		--stagefile)
-			shift
-			STAGEFILE="${1}"
-			;;
 		--profile)
 			shift
 			PROFILE="${1}"
+			;;
+		--mirror)
+			shift
+			MIRROR="${1}"
 			;;
 		--target)
 			shift
@@ -46,7 +46,7 @@ while true; do
 	esac
 	shift
 done
-STAGEFILE="${STAGEFILE:-stage3-${ARCH}.tar.zst}"
+
 PROFILE="${PROFILE:-1}"
 
 if [ -z "${ARCH}" ]; then
@@ -67,10 +67,18 @@ if [ -z "${BUILDTOOL}" ]; then
 	fi
 fi
 
+MIRROR="${MIRROR:-https://gentoo.osuosl.org}"
+STAGE3PATH="/releases/${ARCH}/autobuilds/$(wget -O- "${MIRROR}/releases/${ARCH}/autobuilds/latest-stage3-${ARCH}.txt" 2>/dev/null | tail -n 1 | cut -f 1 -d ' ')"
+STAGE3=$(basename ${STAGE3PATH})
+if ! test -f "base/${STAGE3}"; then
+	rm -f "base/stage3*"
+	wget -O "base/${STAGE3}" -q "${MIRROR}/${STAGE3PATH}"
+fi
+
 CMDLINE="--build-arg CACHEBUST=$(date +%Y-%m-%d) -v ${location}/.tmpfiles/gentoo:/var/db/repos/gentoo:rw -v ${location}/.tmpfiles/distfiles:/var/cache/distfiles:rw"
 case "${TARGET}" in
 	base)
-		CMDLINE="${CMDLINE} --build-arg STAGEFILE=${STAGEFILE} --build-arg PROFILE=${PROFILE}"
+		CMDLINE="${CMDLINE} --build-arg STAGEFILE=${STAGE3} --build-arg PROFILE=${PROFILE}"
 		;;
 	devtools)
 		;;
