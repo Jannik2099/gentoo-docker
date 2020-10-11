@@ -3,7 +3,6 @@ ARG STAGEFILE
 ARG PROFILE
 ADD ${STAGEFILE} /
 ADD package.use/rsync /etc/portage/package.use/
-ENTRYPOINT bash
 # I could not get it to work with >> , bash gods are welcomed to submit a cleaner implementation
 RUN echo EMERGE_DEFAULT_OPTS >> /etc/portage/make.conf
 RUN sed -i "/EMERGE_DEFAULT_OPTS/c\EMERGE_DEFAULT_OPTS=\"--quiet --verbose --autounmask --autounmask-continue\"" /etc/portage/make.conf
